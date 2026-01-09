@@ -77,6 +77,30 @@ export default function JobDetails({ job, onClose }: JobDetailsProps) {
               </div>
             )}
 
+            {/* Priority & Concurrency */}
+            {(job.priority !== undefined || job.concurrency !== undefined) && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Priority & Concurrency</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="text-xs text-gray-500 mb-1">Priority</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-white">{job.priority ?? 5}</span>
+                      <span className="text-xs text-gray-500">
+                        ({job.priority === 1 ? 'Highest' : job.priority === 10 ? 'Lowest' : 'Medium'})
+                      </span>
+                    </div>
+                  </div>
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="text-xs text-gray-500 mb-1">Concurrency Limit</div>
+                    <div className="text-lg font-bold text-white">
+                      {job.concurrency ?? 'No limit'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Lock Info */}
             {job.lockedBy && (
               <div>

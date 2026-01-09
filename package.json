@@ -1,6 +1,6 @@
 {
   "name": "mongo-scheduler-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modern React UI Dashboard for mongo-job-scheduler",
   "repository": {
     "type": "git",

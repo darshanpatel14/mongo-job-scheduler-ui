@@ -18,6 +18,8 @@ export interface Job {
     timezone?: string;
   };
   lastError?: string;
+  priority?: number;
+  concurrency?: number;
   createdAt: Date | string;
   updatedAt: Date | string;
 }

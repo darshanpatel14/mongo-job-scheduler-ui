@@ -7,6 +7,8 @@ import {
   AlertCircle,
   Database,
   Globe,
+  Gauge,
+  Users,
 } from "lucide-react";
 import type { Job } from "../types/job";
 
@@ -38,6 +40,8 @@ export default function JobFormModal({
   const [timezone, setTimezone] = useState("");
   const [maxRetries, setMaxRetries] = useState("3");
   const [retryDelay, setRetryDelay] = useState("1000");
+  const [priority, setPriority] = useState("5");
+  const [concurrency, setConcurrency] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -68,6 +72,10 @@ export default function JobFormModal({
             typeof job.retry.delay === "number" ? job.retry.delay : 1000;
           setRetryDelay(delay.toString());
         }
+
+        // Priority and Concurrency
+        setPriority(job.priority?.toString() || "5");
+        setConcurrency(job.concurrency?.toString() || "");
       } else {
         // Create Mode - Reset
         setName("");
@@ -79,6 +87,8 @@ export default function JobFormModal({
         setEveryInterval("");
         setMaxRetries("3");
         setRetryDelay("1000");
+        setPriority("5");
+        setConcurrency("");
       }
       setError(null);
     }
@@ -116,6 +126,14 @@ export default function JobFormModal({
         payload.repeat = { every: parseInt(everyInterval) };
       } else {
         payload.repeat = undefined;
+      }
+
+      // Add priority (always include, default 5)
+      payload.priority = parseInt(priority) || 5;
+
+      // Add concurrency only if specified
+      if (concurrency && parseInt(concurrency) > 0) {
+        payload.concurrency = parseInt(concurrency);
       }
 
       await onSave(payload);
@@ -322,6 +340,49 @@ export default function JobFormModal({
                   onChange={(e) => setRetryDelay(e.target.value)}
                   className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none"
                 />
+              </div>
+            </div>
+
+            {/* Priority & Concurrency */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-2">
+                  <Gauge className="w-4 h-4 text-gray-400" />
+                  Priority (1-10)
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                  />
+                  <span className="w-8 text-center text-white font-mono bg-gray-900 border border-gray-700 rounded px-2 py-1">
+                    {priority}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  1 = Highest priority, 10 = Lowest
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-gray-400" />
+                  Concurrency Limit
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={concurrency}
+                  onChange={(e) => setConcurrency(e.target.value)}
+                  placeholder="No limit"
+                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Max concurrent jobs of this type
+                </p>
               </div>
             </div>
 
