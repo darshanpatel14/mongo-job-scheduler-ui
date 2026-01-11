@@ -20,6 +20,7 @@ export interface Job {
   lastError?: string;
   priority?: number;
   concurrency?: number;
+  dedupeKey?: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
